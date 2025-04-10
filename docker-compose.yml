@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # Database service
+  mysql:
+    image: mysql:8.0
+    container_name: statuspage-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: statuspage
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - statuspage-network
+
+  # Backend service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: statuspage-backend
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      # Database connection
+      DATABASE_URL: mysql+pymysql://user:password@mysql:3306/statuspage
+      TEST_DATABASE_URL: mysql+pymysql://user:password@mysql:3306/statuspage_test
+      
+      # Security
+      SECRET_KEY: "change-this-to-a-secure-random-string-in-production"
+      ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+      
+      # CORS
+      BACKEND_CORS_ORIGINS: '["http://localhost:5173","http://localhost:3000","http://localhost:80","http://frontend"]'
+      
+      # Database pool settings
+      DATABASE_POOL_SIZE: "20"
+      DATABASE_POOL_RECYCLE: "3600"
+      DATABASE_POOL_TIMEOUT: "30"
+      DATABASE_ECHO: "false"
+      
+      # First superuser
+      FIRST_SUPERUSER_EMAIL: "admin@example.com"
+      FIRST_SUPERUSER_PASSWORD: "admin"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - statuspage-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: statuspage-frontend
+    restart: always
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: production
+      VITE_API_URL: http://backend:8000
+      VITE_WS_URL: ws://backend:8000
+      VITE_APP_NAME: "Status Page"
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/app:ro
+    networks:
+      - statuspage-network
+
+networks:
+  statuspage-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
