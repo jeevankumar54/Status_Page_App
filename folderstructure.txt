@@ -1,0 +1,179 @@
+/status-page-app
+  /backend
+    /app
+      /api
+        /endpoints
+          __init__.py
+          auth.py             # Authentication endpoints
+          services.py         # Service management endpoints
+          incidents.py        # Incident management endpoints
+          organizations.py    # Organization management endpoints
+          public.py           # Public status page endpoints
+        __init__.py
+        dependencies.py       # Dependency injection
+        router.py             # API router setup
+      /core
+        __init__.py
+        config.py             # Application configuration
+        security.py           # Authentication and security
+        events.py             # Startup and shutdown events
+      /db
+        __init__.py
+        base.py               # SQLAlchemy declarative base
+        session.py            # Database session management
+        init_db.py            # Database initialization
+      /models
+        __init__.py
+        user.py               # User model
+        service.py            # Service model
+        incident.py           # Incident model
+        organization.py       # Organization model
+        team.py               # Team model
+      /schemas
+        __init__.py
+        user.py               # User Pydantic schemas
+        service.py            # Service Pydantic schemas
+        incident.py           # Incident Pydantic schemas
+        organization.py       # Organization Pydantic schemas
+        team.py               # Team Pydantic schemas
+      /services
+        __init__.py
+        auth.py               # Authentication service
+        user.py               # User service
+        service.py            # Service management service
+        incident.py           # Incident management service
+        organization.py       # Organization management service
+      /utils
+        __init__.py
+        logger.py             # Logging setup
+        email.py              # Email utilities
+        helpers.py            # Helper functions
+      /websockets
+        __init__.py
+        manager.py            # WebSocket connection manager
+        routes.py             # WebSocket routes
+      __init__.py
+      main.py                 # FastAPI application entry
+    /migrations               # Alembic migrations
+      /versions
+      alembic.ini
+      env.py
+      README
+      script.py.mako
+    /tests
+      /api                    # API tests
+      /services               # Service tests
+      /utils                  # Utility tests
+      conftest.py             # Test fixtures
+      test_main.py            # Main app tests
+    .env                      # Environment variables
+    .gitignore                # Git ignore file
+    Dockerfile                # Backend Docker configuration
+    docker-compose.yml        # Docker Compose configuration
+    pyproject.toml            # Python dependencies (Poetry)
+    requirements.txt          # Python dependencies (pip)
+    README.md                 # Backend documentation
+    
+  /frontend
+    /public
+      favicon.ico             # Favicon
+      index.html              # HTML template
+      robots.txt              # Robots file
+    /src
+      /assets                 # Static assets
+        /images
+        /fonts
+      /components
+        /common               # Shared components
+          Button.jsx
+          Card.jsx
+          Modal.jsx
+          Navbar.jsx
+          PageTitle.jsx
+        /incidents            # Incident components
+          IncidentForm.jsx
+          IncidentList.jsx
+          IncidentDetail.jsx
+          IncidentUpdates.jsx
+        /layout               # Layout components
+          AdminLayout.jsx
+          PublicLayout.jsx
+          Header.jsx
+          Sidebar.jsx
+          Footer.jsx
+        /services             # Service components
+          ServiceForm.jsx
+          ServiceList.jsx
+          ServiceDetail.jsx
+          StatusSelector.jsx
+        /statusPage           # Public status page components
+          CurrentStatus.jsx
+          IncidentHistory.jsx
+          ServiceStatus.jsx
+        /ui                   # UI components
+          Alert.jsx
+          Badge.jsx
+          Dropdown.jsx
+          Input.jsx
+          Loading.jsx
+          Table.jsx
+          Tabs.jsx
+          Toast.jsx
+      /context                # React Context
+        AuthContext.jsx
+        ToastContext.jsx
+        OrganizationContext.jsx
+      /hooks                  # Custom hooks
+        useAuth.js
+        useApi.js
+        useWebSocket.js
+        useToast.js
+      /lib                    # Library code
+        api.js                # API client setup
+        websocket.js          # WebSocket client setup
+        utils.js              # Utility functions
+      /pages
+        /admin
+          Dashboard.jsx
+          Services.jsx
+          Incidents.jsx
+          Teams.jsx
+          Settings.jsx
+        /auth
+          Login.jsx
+          Register.jsx
+          ForgotPassword.jsx
+          ResetPassword.jsx
+        /public
+          StatusPage.jsx
+          IncidentDetail.jsx
+      /services               # API services
+        authService.js        # Authentication API calls
+        serviceService.js     # Service management API calls
+        incidentService.js    # Incident API calls
+        organizationService.js # Organization API calls
+      /styles                 # CSS and Tailwind
+        globals.css           # Global styles
+        tailwind.css          # Tailwind imports
+      App.jsx                 # Main App component
+      index.jsx               # Entry point
+      router.jsx              # React Router setup
+    .env                      # Environment variables
+    .env.development          # Development environment
+    .env.production           # Production environment
+    .eslintrc.js              # ESLint configuration
+    .gitignore                # Git ignore file
+    .prettierrc               # Prettier configuration
+    Dockerfile                # Frontend Docker configuration
+    index.html                # Vite entry HTML
+    package.json              # NPM dependencies
+    postcss.config.js         # PostCSS configuration
+    README.md                 # Frontend documentation
+    tailwind.config.js        # Tailwind configuration
+    tsconfig.json             # TypeScript configuration
+    vite.config.js            # Vite configuration
+    
+  .dockerignore               # Docker ignore file
+  .gitignore                  # Root Git ignore file
+  docker-compose.yml          # Docker Compose configuration
+  README.md                   # Project documentation
