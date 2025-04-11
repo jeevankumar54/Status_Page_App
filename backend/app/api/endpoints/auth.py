@@ -6,8 +6,11 @@ from app.core.security import create_access_token
 from app.db.session import get_db
 from app.services.auth import authenticate_user, register_new_user
 from app.schemas.user import Token, UserCreate, User
+# Add this missing import
+from app.api.dependencies import get_current_active_user
 
 router = APIRouter()
+
 
 @router.post("/login", response_model=Token)
 def login(
@@ -25,7 +28,8 @@ def login(
         )
     
     access_token = create_access_token(subject=user.id)
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "user": user}
+
 
 @router.post("/register", response_model=Token)
 def register(*, db: Session = Depends(get_db), user_in: UserCreate) -> dict:
@@ -41,4 +45,12 @@ def register(*, db: Session = Depends(get_db), user_in: UserCreate) -> dict:
         )
     
     access_token = create_access_token(subject=user.id)
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "user": user}
+
+
+@router.get("/me", response_model=User)
+def read_users_me(current_user: User = Depends(get_current_active_user)):
+    """
+    Get current user.
+    """
+    return current_user

@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserCreate
 from app.core.security import verify_password, get_password_hash
+from app.schemas.organization import OrganizationCreate
 
 
 def authenticate_user(db: Session, *, email: str, password: str) -> Optional[User]:
@@ -25,16 +26,33 @@ def register_new_user(db: Session, *, user_in: UserCreate) -> User:
     if db_user:
         raise ValueError("Email already registered")
     
+    # Set organization_id to None by default
+    organization_id = None
+    
+    # Create organization if provided in the request
+    if hasattr(user_in, 'organization') and user_in.organization:
+        from app.services.organization import create_organization
+        from app.schemas.organization import OrganizationCreate
+        
+        org_data = OrganizationCreate(
+            name=user_in.organization.get("name"),
+            slug=user_in.organization.get("slug")
+        )
+        
+        org = create_organization(db, obj_in=org_data)
+        organization_id = org.id
+    
     # Create new user
     hashed_password = get_password_hash(user_in.password)
     db_user = User(
         email=user_in.email,
         hashed_password=hashed_password,
         full_name=user_in.full_name,
-        is_active=user_in.is_active,
-        is_superuser=user_in.is_superuser,
-        organization_id=user_in.organization_id,
+        is_active=user_in.is_active if user_in.is_active is not None else True,
+        is_superuser=user_in.is_superuser if user_in.is_superuser is not None else False,
+        organization_id=organization_id
     )
+    
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

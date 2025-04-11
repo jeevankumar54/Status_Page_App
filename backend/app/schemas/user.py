@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field
 
@@ -15,6 +15,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     email: EmailStr
     password: str
+    organization: Optional[Dict[str, Any]] = None  # For nested organization info
 
 
 # Properties to receive via API on update
@@ -47,6 +48,7 @@ class UserInDB(UserInDBBase):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    user: Optional[User] = None  # Include user info in response
 
 
 # Payload for JWT token

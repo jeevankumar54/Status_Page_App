@@ -42,12 +42,14 @@ def create_new_organization(
     """
     Create new organization.
     """
-    # Only superusers can create organizations
+    # Superusers can always create organizations
     if not current_user.is_superuser and current_user.organization_id:
         raise HTTPException(
             status_code=400,
             detail="User already belongs to an organization",
         )
+    
+    # Create the organization and associate the user with it
     organization = create_organization(db, obj_in=organization_in, user=current_user)
     return organization
 
@@ -71,7 +73,7 @@ def read_organization(
     # Users can only access their own organization unless they're superusers
     if not current_user.is_superuser and current_user.organization_id != organization.id:
         raise HTTPException(
-            status_code=400,
+            status_code=403,
             detail="Not enough permissions",
         )
     return organization
@@ -97,7 +99,7 @@ def update_organization_details(
     # Users can only update their own organization unless they're superusers
     if not current_user.is_superuser and current_user.organization_id != organization.id:
         raise HTTPException(
-            status_code=400,
+            status_code=403,
             detail="Not enough permissions",
         )
     organization = update_organization(

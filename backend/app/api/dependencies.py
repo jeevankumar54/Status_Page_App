@@ -49,7 +49,7 @@ def get_current_active_superuser(
 ) -> User:
     if not current_user.is_superuser:
         raise HTTPException(
-            status_code=400, detail="The user doesn't have enough privileges"
+            status_code=403, detail="The user doesn't have enough privileges"
         )
     return current_user
 
@@ -57,6 +57,15 @@ def get_current_active_superuser(
 def get_user_organization_id(
     current_user: User = Depends(get_current_active_user),
 ) -> int:
+    # For superusers, we'll allow operations even without an organization
+    if current_user.is_superuser and not current_user.organization_id:
+        # Return a dummy org ID or special value that your code can handle
+        # Alternatively, you could modify the endpoints to handle None
+        raise HTTPException(
+            status_code=400, 
+            detail="User does not belong to any organization"
+        )
+        
     if not current_user.organization_id:
         raise HTTPException(
             status_code=400, 
