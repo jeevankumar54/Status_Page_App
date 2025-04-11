@@ -9,8 +9,8 @@ from app.models.user import user_team
 
 class Team(Base):
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True, nullable=False)
-    description = Column(String, nullable=True)
+    name = Column(String(255), index=True, nullable=False)
+    description = Column(String(255), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     

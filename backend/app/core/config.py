@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     BACKEND_CORS_ORIGINS: List[str] = []
-
+    FIRST_SUPERUSER_EMAIL: Optional[EmailStr] = None
+    FIRST_SUPERUSER_PASSWORD: Optional[str] = None
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: str | List[str]) -> List[str] | str:
         if isinstance(v, str) and not v.startswith("["):

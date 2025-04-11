@@ -36,7 +36,7 @@ incident_service = Table(
 
 class Incident(Base):
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True, nullable=False)
+    title = Column(String(255), index=True, nullable=False)
     status = Column(
         Enum(IncidentStatus), 
         default=IncidentStatus.INVESTIGATING, 

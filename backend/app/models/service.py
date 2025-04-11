@@ -17,8 +17,8 @@ class ServiceStatus(str, enum.Enum):
 
 class Service(Base):
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True, nullable=False)
-    description = Column(String, nullable=True)
+    name = Column(String(255), index=True, nullable=False)
+    description = Column(String(255), nullable=True)
     status = Column(
         Enum(ServiceStatus), 
         default=ServiceStatus.OPERATIONAL, 
